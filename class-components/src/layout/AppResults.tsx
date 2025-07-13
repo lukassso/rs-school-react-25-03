@@ -1,11 +1,11 @@
 import React from 'react';
 import CardSkeleton from '../components/CardSkeleton.component';
-import reactIcon from '../assets/react.svg';
+import type { DisplayPokemon } from '../types';
 
 interface AppResultsProps {
   isLoading: boolean;
   error: Error | null;
-  pokemons?: any[];
+  pokemons: DisplayPokemon[];
 }
 
 class AppResults extends React.Component<AppResultsProps> {
@@ -31,7 +31,7 @@ class AppResults extends React.Component<AppResultsProps> {
       );
     }
 
-    if (pokemons.length !== 0) {
+    if (pokemons.length === 0) {
       return (
         <div className="text-center p-10 text-gray-500 h-80 flex flex-col items-center justify-center">
           No Pokémon found. Try searching for another!
@@ -41,51 +41,19 @@ class AppResults extends React.Component<AppResultsProps> {
 
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105">
-          <img className="w-24 h-24 mb-3" src={reactIcon} />
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
-            Pikachu
-          </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            Pikachu is an Electric-type Pokémon.
-          </p>
-        </div>
-        <div className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105">
-          <img className="w-24 h-24 mb-3" src={reactIcon} />
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
-            Pikachu
-          </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            Pikachu is an Electric-type Pokémon.
-          </p>
-        </div>
-        <div className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105">
-          <img className="w-24 h-24 mb-3" src={reactIcon} />
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
-            Pikachu
-          </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            Pikachu is an Electric-type Pokémon.
-          </p>
-        </div>
-        <div className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105">
-          <img className="w-24 h-24 mb-3" src={reactIcon} />
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
-            Pikachu
-          </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            Pikachu is an Electric-type Pokémon.
-          </p>
-        </div>
-        <div className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105">
-          <img className="w-24 h-24 mb-3" src={reactIcon} />
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
-            Pikachu
-          </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            Pikachu is an Electric-type Pokémon.
-          </p>
-        </div>
+        {pokemons.map((pokemon) => (
+          <div
+            key={pokemon.id}
+            className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105"
+          >
+            <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
+              {pokemon.name}
+            </h3>
+            <p className="text-sm text-gray-500 h-20 overflow-hidden">
+              {pokemon.description}
+            </p>
+          </div>
+        ))}
       </div>
     );
   }

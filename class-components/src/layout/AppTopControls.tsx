@@ -3,15 +3,22 @@ import SearchComponent from '../components/Search.component';
 
 interface AppTopControlsProps {
   onSearch: () => void;
-  isLoading?: boolean;
+  isLoading: boolean;
+  searchTerm: string;
+  onSearchTermChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 class AppTopControls extends React.Component<AppTopControlsProps> {
   render() {
-    const { onSearch, isLoading } = this.props;
+    const { onSearch, isLoading, searchTerm, onSearchTermChange } = this.props;
     return (
       <div className="flex justify-between items-center mb-4 gap-2">
-        <SearchComponent onSearch={onSearch} isLoading={isLoading} />
+        <SearchComponent
+          onSearch={onSearch}
+          isLoading={isLoading}
+          searchTerm={searchTerm}
+          onSearchTermChange={onSearchTermChange}
+        />
       </div>
     );
   }
