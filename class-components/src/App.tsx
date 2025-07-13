@@ -4,13 +4,6 @@ import AppResults from './layout/AppResults';
 import type { DisplayPokemon } from './types';
 import { getPokemons } from './services/api';
 
-interface AppState {
-  isLoading: boolean;
-  error: Error | null;
-  pokemons: DisplayPokemon[];
-  searchTerm: string;
-}
-
 const LS_SEARCH_KEY = 'pokemonSearchTerm';
 
 interface AppState {
@@ -18,7 +11,6 @@ interface AppState {
   pokemons: DisplayPokemon[];
   isLoading: boolean;
   error: Error | null;
-  // This state is just for testing the error boundary
   shouldThrowError: boolean;
 }
 
@@ -40,6 +32,10 @@ class App extends React.Component<{}, AppState> {
       this.fetchData();
     });
   }
+
+  handleThrowError = () => {
+    this.setState({ shouldThrowError: true });
+  };
 
   fetchData = () => {
     const { searchTerm } = this.state;
@@ -65,7 +61,13 @@ class App extends React.Component<{}, AppState> {
   };
 
   render() {
-    const { isLoading, error, pokemons, searchTerm } = this.state;
+    const { isLoading, error, pokemons, searchTerm, shouldThrowError } =
+      this.state;
+
+    if (shouldThrowError) {
+      throw new Error('You clicked the button to test the Error Boundary!');
+    }
+
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(36,36,36)] text-white p-8">
         <AppTopControls
@@ -75,10 +77,12 @@ class App extends React.Component<{}, AppState> {
           onSearchTermChange={this.handleSearchTermChange}
         />
         <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
-        <button className="cursor-pointer mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button
+          onClick={this.handleThrowError}
+          className="cursor-pointer mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
           Check an error
         </button>
-        {/* <AppErrors /> */}
       </div>
     );
   }
