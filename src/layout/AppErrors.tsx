@@ -12,8 +12,8 @@ export class AppErrors extends React.Component<Props, State> {
   public state: State = {
     hasError: false,
   };
-
-  public static getDerivedStateFromError(_: Error): State {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static getDerivedStateFromError(_error: Error): State {
     return { hasError: true };
   }
 

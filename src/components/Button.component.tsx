@@ -6,9 +6,6 @@ interface ButtonProps {
 }
 
 class Button extends React.Component<ButtonProps> {
-  constructor(props: ButtonProps) {
-    super(props);
-  }
   static defaultProps = {
     onClick: () => alert('Button clicked!'),
     children: 'Click Me',
