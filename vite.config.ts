@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/tests/setup.ts',
+    setupFiles: './src/test/setup.ts',
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
@@ -17,7 +17,7 @@ export default defineConfig({
         'src/main.tsx',
         'src/vite-env.d.ts',
         'src/types.ts',
-        'src/tests',
+        'src/test/setup.ts',
         'src/components/CardSkeleton.component.tsx',
         'src/index.css',
       ],
