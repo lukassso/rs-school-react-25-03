@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse, delay } from 'msw';
 import type { PokemonListResponse, PokemonSpeciesResponse } from '../types';
 
 const API_BASE_URL = 'https://pokeapi.co/api/v2';
@@ -58,16 +58,14 @@ const mockPikachuSpecies: PokemonSpeciesResponse = {
 
 export const handlers = [
   // List pokemons
-  http.get(`${API_BASE_URL}/pokemon`, ({ request }) => {
-    const url = new URL(request.url);
-    const searchTerm = url.searchParams.get('limit');
-    if (searchTerm === '20') {
-      return HttpResponse.json(mockPokemonList);
-    }
+  http.get(`${API_BASE_URL}/pokemon`, async () => {
+    await delay(150); // Simulate network delay
+    return HttpResponse.json(mockPokemonList);
   }),
 
   // Search for a specific pokemon
-  http.get(`${API_BASE_URL}/pokemon/:name`, ({ params }) => {
+  http.get(`${API_BASE_URL}/pokemon/:name`, async ({ params }) => {
+    await delay(150);
     const { name } = params;
     if (name === 'pikachu') {
       return HttpResponse.json(mockPikachuData);
@@ -85,7 +83,8 @@ export const handlers = [
   }),
 
   // Get species details
-  http.get(`${API_BASE_URL}/pokemon-species/:id`, ({ params }) => {
+  http.get(`${API_BASE_URL}/pokemon-species/:id`, async ({ params }) => {
+    await delay(150);
     const { id } = params;
     if (id === '1') return HttpResponse.json(mockBulbasaurSpecies);
     if (id === '2') return HttpResponse.json(mockIvysaurSpecies);

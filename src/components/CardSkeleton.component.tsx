@@ -6,7 +6,7 @@ class CardSkeleton extends React.Component {
       <div
         className="h-38 w-67 bg-gray-300 rounded"
         data-testid="card-skeleton"
-      ></div>
+      />
     );
   }
 }
