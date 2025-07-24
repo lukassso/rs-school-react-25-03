@@ -8,19 +8,21 @@ interface AppTopControlsProps {
   onSearchTermChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-class AppTopControls extends React.Component<AppTopControlsProps> {
-  render() {
-    const { onSearch, isLoading, searchTerm, onSearchTermChange } = this.props;
-    return (
-      <div className="flex justify-between items-center mb-4 gap-2">
-        <SearchComponent
-          onSearch={onSearch}
-          isLoading={isLoading}
-          searchTerm={searchTerm}
-          onSearchTermChange={onSearchTermChange}
-        />
-      </div>
-    );
-  }
-}
+const AppTopControls: React.FC<AppTopControlsProps> = ({
+  onSearch,
+  isLoading,
+  searchTerm,
+  onSearchTermChange,
+}) => {
+  return (
+    <div className="flex justify-between items-center mb-4 gap-2">
+      <SearchComponent
+        onSearch={onSearch}
+        isLoading={isLoading}
+        searchTerm={searchTerm}
+        onSearchTermChange={onSearchTermChange}
+      />
+    </div>
+  );
+};
 export default AppTopControls;

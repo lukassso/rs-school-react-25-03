@@ -14,78 +14,69 @@ interface AppState {
   shouldThrowError: boolean;
 }
 
-class App extends React.Component<Record<string, never>, AppState> {
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-      pokemons: [],
-      isLoading: false,
-      error: null,
-      shouldThrowError: false,
-    };
-  }
+const App: React.FC = () => {
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [pokemons, setPokemons] = React.useState<DisplayPokemon[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<Error | null>(null);
+  const [shouldThrowError, setShouldThrowError] = React.useState(false);
 
-  componentDidMount(): void {
+  React.useEffect(() => {
     const savedSearchTerm = localStorage.getItem(LS_SEARCH_KEY) || '';
-    this.setState({ searchTerm: savedSearchTerm }, () => {
-      this.fetchData();
-    });
-  }
+    setSearchTerm(savedSearchTerm);
+  }, []);
 
-  handleThrowError = () => {
-    this.setState({ shouldThrowError: true });
+  const handleThrowError = () => {
+    setShouldThrowError(true);
   };
 
-  fetchData = () => {
-    const { searchTerm } = this.state;
-    this.setState({ isLoading: true, error: null });
+  const fetchData = () => {
+    setIsLoading(true);
+    setError(null);
 
     getPokemons(searchTerm.trim())
-      .then((pokemons) => {
-        this.setState({ pokemons, isLoading: false });
+      .then((data) => {
+        setPokemons(data);
+        setIsLoading(false);
       })
       .catch((error) => {
-        this.setState({ error, isLoading: false, pokemons: [] });
+        setError(error);
+        setIsLoading(false);
       });
   };
 
-  handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: event.target.value });
+  const handleSearchTermChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
   };
 
-  handleSearch = () => {
-    const { searchTerm } = this.state;
+  const handleSearch = () => {
     localStorage.setItem(LS_SEARCH_KEY, searchTerm.trim());
-    this.fetchData();
+    fetchData();
   };
 
-  render() {
-    const { isLoading, error, pokemons, searchTerm, shouldThrowError } =
-      this.state;
-
-    if (shouldThrowError) {
-      throw new Error('You clicked the button to test the Error Boundary!');
-    }
-
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(36,36,36)] text-white p-8">
-        <AppTopControls
-          searchTerm={searchTerm}
-          onSearch={this.handleSearch}
-          isLoading={isLoading}
-          onSearchTermChange={this.handleSearchTermChange}
-        />
-        <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
-        <button
-          onClick={this.handleThrowError}
-          className="cursor-pointer mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Check an error
-        </button>
-      </div>
-    );
+  if (shouldThrowError) {
+    throw new Error('You clicked the button to test the Error Boundary!');
   }
-}
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(36,36,36)] text-white p-8">
+      <AppTopControls
+        searchTerm={searchTerm}
+        onSearch={handleSearch}
+        isLoading={isLoading}
+        onSearchTermChange={handleSearchTermChange}
+      />
+      <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
+      <button
+        onClick={handleThrowError}
+        className="cursor-pointer mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Check an error
+      </button>
+    </div>
+  );
+};
 
 export default App;
