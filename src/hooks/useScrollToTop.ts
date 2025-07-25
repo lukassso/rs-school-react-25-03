@@ -13,7 +13,7 @@ function useScrollToTop(dependencies: React.DependencyList) {
         behavior: 'smooth',
       });
     } catch (error) {
-      // Fallback for older browsers
+      console.error('Failed to scroll to top:', error);
       window.scrollTo(0, 0);
     }
   }, dependencies);

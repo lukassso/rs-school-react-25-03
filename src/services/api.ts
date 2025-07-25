@@ -32,14 +32,14 @@ export async function fetchPokemonDetails(
     id: pokemonData.id,
     name: pokemonData.name,
     description: englishDescription,
-    imageUrl: pokemonData.sprites.front_default,
+    imageUrl: pokemonData.sprites.front_default || '',
   };
 }
 
 export async function getPokemons(
   page: number,
   searchTerm?: string
-): Promise<{ pokemons: DisplayPokemon[]; total: number | undefined }> {
+): Promise<{ pokemons: DisplayPokemon[]; total: number }> {
   if (searchTerm) {
     try {
       const pokemon = await fetchPokemonDetails(searchTerm.toLowerCase());

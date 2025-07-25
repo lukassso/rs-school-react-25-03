@@ -6,7 +6,7 @@ export interface DisplayPokemon {
 }
 
 export interface PokemonListResponse {
-  count?: number;
+  count: number;
   results: {
     name: string;
     url: string;
@@ -27,7 +27,7 @@ export interface PokemonDetailsResponse {
   id: number;
   name: string;
   sprites: {
-    front_default: string;
+    front_default: string | null;
   };
   species: {
     url: string;
