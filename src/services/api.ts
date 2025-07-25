@@ -39,7 +39,7 @@ export async function fetchPokemonDetails(
 export async function getPokemons(
   page: number,
   searchTerm?: string
-): Promise<{ pokemons: DisplayPokemon[]; total: number }> {
+): Promise<{ pokemons: DisplayPokemon[]; total: number | undefined }> {
   if (searchTerm) {
     try {
       const pokemon = await fetchPokemonDetails(searchTerm.toLowerCase());
