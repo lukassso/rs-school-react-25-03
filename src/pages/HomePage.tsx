@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, Outlet } from 'react-router-dom';
 import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
@@ -14,45 +14,55 @@ const HomePage: React.FC = () => {
     ''
   );
 
-  const searchTermFromUrl = searchParams.get('search') || persistedQuery;
-  const [inputValue, setInputValue] = useState(searchTermFromUrl);
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const searchTerm = searchParams.get('search') || '';
+  const detailsOpen = searchParams.has('details'); // **PRZYWRÓCONE I KLUCZOWE**
+
+  const [inputValue, setInputValue] = useState(searchTerm || persistedQuery);
 
   const [pokemons, setPokemons] = useState<DisplayPokemon[]>([]);
   const [totalPokemons, setTotalPokemons] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const searchTerm = searchParams.get('search') || '';
-  const detailsOpen = searchParams.has('details');
 
   useScrollToTop([page, searchTerm]);
 
-  const fetchData = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const { pokemons: fetchedPokemons, total } = await getPokemons(
-        page,
-        searchTerm
-      );
-      setPokemons(fetchedPokemons);
-      setTotalPokemons(total);
-      if (total === 0 && searchTerm) {
-        throw new Error(`Pokémon not found: ${searchTerm}`);
-      }
-    } catch (err) {
-      setError(err as Error);
-      setPokemons([]);
-      setTotalPokemons(0);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    const searchFromUrl = searchParams.get('search');
+    if (searchFromUrl === null && persistedQuery) {
+      setSearchParams({ search: persistedQuery, page: '1' }, { replace: true });
     }
-  }, [page, searchTerm]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (!searchParams.has('search') && persistedQuery) {
+      return;
+    }
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const { pokemons: fetchedPokemons, total } = await getPokemons(
+          page,
+          searchTerm
+        );
+        setPokemons(fetchedPokemons);
+        setTotalPokemons(total);
+        if (total === 0 && searchTerm) {
+          throw new Error(`Pokémon not found: ${searchTerm}`);
+        }
+      } catch (err) {
+        setError(err as Error);
+        setPokemons([]);
+        setTotalPokemons(0);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchData();
-  }, [fetchData]);
+  }, [page, searchTerm]);
 
   const handleSearch = () => {
     const trimmedValue = inputValue.trim();
