@@ -3,7 +3,7 @@ import { useSearchParams, Outlet } from 'react-router-dom';
 import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
 import Pagination from '../components/Pagination.component';
-import useLocalStorage from '../hooks/useLocalStorage';
+import { useLocalStorage, useScrollToTop } from '../hooks';
 import type { DisplayPokemon } from '../types';
 import { getPokemons, ITEMS_PER_PAGE } from '../services/api';
 
@@ -25,6 +25,8 @@ const HomePage: React.FC = () => {
   const page = parseInt(searchParams.get('page') || '1', 10);
   const searchTerm = searchParams.get('search') || '';
   const detailsOpen = searchParams.has('details');
+
+  useScrollToTop([page, searchTerm]);
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);

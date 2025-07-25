@@ -18,7 +18,7 @@ const AppResults: React.FC<AppResultsProps> = ({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
         {Array.from({ length: 20 }).map((_, index) => (
           <CardSkeleton key={index} />
         ))}
