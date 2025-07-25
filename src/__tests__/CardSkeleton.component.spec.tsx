@@ -20,7 +20,7 @@ describe('CardSkeleton component', () => {
 
     // It verifies that the styling that makes it look like a skeleton is applied.
     expect(skeletonDiv).toHaveClass(
-      'h-45 w-67 bg-gray-300 rounded-lg animate-pulse shadow-md flex items-center justify-center'
+      'w-full h-48 bg-gray-700 rounded-lg animate-pulse'
     );
   });
 });
