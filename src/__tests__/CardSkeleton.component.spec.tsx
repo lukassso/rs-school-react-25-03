@@ -19,6 +19,8 @@ describe('CardSkeleton component', () => {
     const skeletonDiv = container.firstChild;
 
     // It verifies that the styling that makes it look like a skeleton is applied.
-    expect(skeletonDiv).toHaveClass('h-38 w-67 bg-gray-300 rounded');
+    expect(skeletonDiv).toHaveClass(
+      'h-45 w-67 bg-gray-300 rounded-lg animate-pulse shadow-md flex items-center justify-center'
+    );
   });
 });

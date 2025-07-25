@@ -1,12 +1,11 @@
 export interface DisplayPokemon {
   id: number;
   name: string;
-  description: string;
   imageUrl: string;
 }
 
 export interface PokemonListResponse {
-  count: number;
+  count?: number;
   results: {
     name: string;
     url: string;

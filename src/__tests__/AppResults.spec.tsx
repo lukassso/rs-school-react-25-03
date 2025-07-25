@@ -30,17 +30,15 @@ describe('AppResults component', () => {
 
   it('renders a list of pokemons when data is provided', () => {
     const mockPokemons: DisplayPokemon[] = [
-      { id: 1, name: 'Bulbasaur', description: 'A grass type pokemon' },
-      { id: 4, name: 'Charmander', description: 'A fire type pokemon' },
+      { id: 1, name: 'Bulbasaur', imageUrl: 'bulbasaur.png' },
+      { id: 4, name: 'Charmander', imageUrl: 'charmander.png' },
     ];
     render(
       <AppResults isLoading={false} error={null} pokemons={mockPokemons} />
     );
 
     expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
-    expect(screen.getByText('A grass type pokemon')).toBeInTheDocument();
     expect(screen.getByText('Charmander')).toBeInTheDocument();
-    expect(screen.getByText('A fire type pokemon')).toBeInTheDocument();
     expect(screen.queryByTestId('card-skeleton')).not.toBeInTheDocument();
   });
 });
