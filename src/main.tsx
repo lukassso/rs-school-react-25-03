@@ -8,6 +8,7 @@ import MainLayout from './layout/MainLayout.tsx';
 import HomePage from './pages/HomePage.tsx';
 import AboutPage from './pages/AboutPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
+import PokemonDetails from './pages/PokemonDetails.tsx';
 
 const router = createBrowserRouter([
   {
@@ -16,12 +17,18 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
     children: [
       {
-        index: true,
+        path: '/',
         element: <HomePage />,
-      },
-      {
-        path: 'about',
-        element: <AboutPage />,
+        children: [
+          {
+            index: true,
+            element: <PokemonDetails />,
+          },
+          {
+            path: 'about',
+            element: <AboutPage />,
+          },
+        ],
       },
     ],
   },

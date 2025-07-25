@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Outlet } from 'react-router-dom';
 import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
 import Pagination from '../components/Pagination.component';
@@ -24,6 +24,7 @@ const HomePage: React.FC = () => {
 
   const page = parseInt(searchParams.get('page') || '1', 10);
   const searchTerm = searchParams.get('search') || '';
+  const detailsOpen = searchParams.has('details');
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -66,20 +67,30 @@ const HomePage: React.FC = () => {
   const totalPages = Math.ceil(totalPokemons / ITEMS_PER_PAGE);
 
   return (
-    <div className="flex flex-col items-center">
-      <AppTopControls
-        searchTerm={inputValue}
-        onSearch={handleSearch}
-        isLoading={isLoading}
-        onSearchTermChange={(e) => setInputValue(e.target.value)}
-      />
-      <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
-      {!isLoading && !error && (
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+    <div
+      className="lg:grid lg:gap-8"
+      style={{ gridTemplateColumns: detailsOpen ? '3fr 1fr' : '1fr' }}
+    >
+      <div className="flex flex-col items-center">
+        <AppTopControls
+          searchTerm={inputValue}
+          onSearch={handleSearch}
+          isLoading={isLoading}
+          onSearchTermChange={(e) => setInputValue(e.target.value)}
         />
+        <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
+        {!isLoading && !error && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+      </div>
+      {detailsOpen && (
+        <div className="animate-fade-in mt-8 lg:mt-0">
+          <Outlet />
+        </div>
       )}
     </div>
   );
