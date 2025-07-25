@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import AppTopControls from './layout/AppTopControls';
-import AppResults from './layout/AppResults';
-import type { DisplayPokemon } from './types';
-import { getPokemons } from './services/api';
-import useLocalStorage from './hooks/useLocalStorage';
+import AppTopControls from '../layout/AppTopControls';
+import AppResults from '../layout/AppResults';
+import type { DisplayPokemon } from '../types';
+import { getPokemons } from '../services/api';
+import useLocalStorage from '../hooks/useLocalStorage';
 
-const App: React.FC = () => {
+const HomePage: React.FC = () => {
   const [persistedQuery, setPersistedQuery] = useLocalStorage(
     'pokemonSearchTerm',
     ''
   );
   const [inputValue, setInputValue] = useState(persistedQuery);
+
   const [pokemons, setPokemons] = useState<DisplayPokemon[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -21,6 +22,9 @@ const App: React.FC = () => {
 
     getPokemons(persistedQuery)
       .then((pokemons) => {
+        if (pokemons.length === 0 && persistedQuery) {
+          throw new Error(`Pokémon not found: ${persistedQuery}`);
+        }
         setPokemons(pokemons);
       })
       .catch((err) => {
@@ -41,7 +45,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
+    <div className="flex flex-col items-center">
       <AppTopControls
         searchTerm={inputValue}
         onSearch={handleSearch}
@@ -53,4 +57,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default HomePage;
