@@ -1,8 +1,38 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-import App from './App.tsx';
+
 import AppErrors from './layout/AppErrors.tsx';
+import MainLayout from './layout/MainLayout.tsx';
+import HomePage from './pages/HomePage.tsx';
+import AboutPage from './pages/AboutPage.tsx';
+import NotFoundPage from './pages/NotFoundPage.tsx';
+import PokemonDetails from './pages/PokemonDetails.tsx';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    errorElement: <NotFoundPage />,
+    children: [
+      {
+        path: '/',
+        element: <HomePage />,
+        children: [
+          {
+            index: true,
+            element: <PokemonDetails />,
+          },
+        ],
+      },
+      {
+        path: 'about',
+        element: <AboutPage />,
+      },
+    ],
+  },
+]);
 
 const rootElement = document.getElementById('root');
 
@@ -11,7 +41,7 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <AppErrors>
-        <App />
+        <RouterProvider router={router} />
       </AppErrors>
     </StrictMode>
   );

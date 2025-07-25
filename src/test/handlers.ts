@@ -1,96 +1,161 @@
 import { http, HttpResponse, delay } from 'msw';
-import type { PokemonListResponse, PokemonSpeciesResponse } from '../types';
+import type {
+  PokemonListResponse,
+  PokemonSpeciesResponse,
+  PokemonDetailsResponse,
+  DisplayPokemon,
+} from '../types';
 
 const API_BASE_URL = 'https://pokeapi.co/api/v2';
 
-const mockPokemonList: PokemonListResponse = {
+export const mockBulbasaur: DisplayPokemon = {
+  id: 1,
+  name: 'bulbasaur',
+  description: 'A strange seed was planted on its back at birth.',
+  imageUrl:
+    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
+};
+
+export const mockIvysaur: DisplayPokemon = {
+  id: 2,
+  name: 'ivysaur',
+  description: 'When the bulb on its back grows large...',
+  imageUrl:
+    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png',
+};
+
+export const mockPikachu: DisplayPokemon = {
+  id: 25,
+  name: 'pikachu',
+  description: 'It has small electric sacs on both its cheeks.',
+  imageUrl:
+    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+};
+
+export const mockCharmander: DisplayPokemon = {
+  id: 4,
+  name: 'charmander',
+  description: 'It has a preference for hot things.',
+  imageUrl:
+    'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png',
+};
+
+const mockPokemonListPage1: PokemonListResponse = {
+  count: 151,
   results: [
-    { name: 'bulbasaur', url: `${API_BASE_URL}/pokemon/1/` },
-    { name: 'ivysaur', url: `${API_BASE_URL}/pokemon/2/` },
+    { name: mockBulbasaur.name, url: `${API_BASE_URL}/pokemon/1/` },
+    { name: mockIvysaur.name, url: `${API_BASE_URL}/pokemon/2/` },
   ],
 };
 
-const mockBulbasaurData = {
-  name: 'bulbasaur',
+const mockPokemonListPage2: PokemonListResponse = {
+  count: 151,
+  results: [{ name: mockCharmander.name, url: `${API_BASE_URL}/pokemon/4/` }],
+};
+
+const mockBulbasaurData: PokemonDetailsResponse = {
+  id: mockBulbasaur.id,
+  name: mockBulbasaur.name,
+  sprites: { front_default: mockBulbasaur.imageUrl },
   species: { url: `${API_BASE_URL}/pokemon-species/1/` },
+};
+
+const mockIvysaurData: PokemonDetailsResponse = {
+  id: mockIvysaur.id,
+  name: mockIvysaur.name,
+  sprites: { front_default: mockIvysaur.imageUrl },
+  species: { url: `${API_BASE_URL}/pokemon-species/2/` },
+};
+
+const mockPikachuData: PokemonDetailsResponse = {
+  id: mockPikachu.id,
+  name: mockPikachu.name,
+  sprites: { front_default: mockPikachu.imageUrl },
+  species: { url: `${API_BASE_URL}/pokemon-species/25/` },
+};
+
+const mockCharmanderData: PokemonDetailsResponse = {
+  id: mockCharmander.id,
+  name: mockCharmander.name,
+  sprites: { front_default: mockCharmander.imageUrl },
+  species: { url: `${API_BASE_URL}/pokemon-species/4/` },
 };
 
 const mockBulbasaurSpecies: PokemonSpeciesResponse = {
   id: 1,
   flavor_text_entries: [
-    {
-      flavor_text: 'A strange seed was\nplanted on its back at birth.',
-      language: { name: 'en' },
-    },
+    { flavor_text: mockBulbasaur.description, language: { name: 'en' } },
   ],
-};
-
-const mockIvysaurData = {
-  name: 'ivysaur',
-  species: { url: `${API_BASE_URL}/pokemon-species/2/` },
 };
 
 const mockIvysaurSpecies: PokemonSpeciesResponse = {
   id: 2,
   flavor_text_entries: [
-    {
-      flavor_text:
-        'When the bulb on its back grows large, it appears to lose the ability to stand on its hind legs.',
-      language: { name: 'en' },
-    },
+    { flavor_text: mockIvysaur.description, language: { name: 'en' } },
   ],
-};
-
-const mockPikachuData = {
-  name: 'pikachu',
-  species: { url: `${API_BASE_URL}/pokemon-species/25/` },
 };
 
 const mockPikachuSpecies: PokemonSpeciesResponse = {
   id: 25,
   flavor_text_entries: [
-    {
-      flavor_text: 'It has small electric sacs on both its cheeks.',
-      language: { name: 'en' },
-    },
+    { flavor_text: mockPikachu.description, language: { name: 'en' } },
+  ],
+};
+
+const mockCharmanderSpecies: PokemonSpeciesResponse = {
+  id: 4,
+  flavor_text_entries: [
+    { flavor_text: mockCharmander.description, language: { name: 'en' } },
   ],
 };
 
 export const handlers = [
-  // List pokemons
-  http.get(`${API_BASE_URL}/pokemon`, async () => {
-    await delay(150); // Simulate network delay
-    return HttpResponse.json(mockPokemonList);
+  http.get(`${API_BASE_URL}/pokemon`, async ({ request }) => {
+    const url = new URL(request.url);
+    const offset = url.searchParams.get('offset');
+
+    await delay(10);
+
+    if (offset === '20') {
+      return HttpResponse.json(mockPokemonListPage2);
+    }
+
+    return HttpResponse.json(mockPokemonListPage1);
   }),
 
-  // Search for a specific pokemon
   http.get(`${API_BASE_URL}/pokemon/:name`, async ({ params }) => {
-    await delay(150);
+    await delay(10);
     const { name } = params;
-    if (name === 'pikachu') {
-      return HttpResponse.json(mockPikachuData);
+
+    switch (name) {
+      case 'pikachu':
+        return HttpResponse.json(mockPikachuData);
+      case 'bulbasaur':
+        return HttpResponse.json(mockBulbasaurData);
+      case 'ivysaur':
+        return HttpResponse.json(mockIvysaurData);
+      case 'charmander':
+        return HttpResponse.json(mockCharmanderData);
+      default:
+        return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
     }
-    if (name === 'bulbasaur') {
-      return HttpResponse.json(mockBulbasaurData);
-    }
-    if (name === 'ivysaur') {
-      return HttpResponse.json(mockIvysaurData);
-    }
-    if (name === 'notfound') {
-      return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
-    }
-    return HttpResponse.json(mockPokemonList);
   }),
 
-  // Get species details
   http.get(`${API_BASE_URL}/pokemon-species/:id`, async ({ params }) => {
-    await delay(150);
+    await delay(10);
     const { id } = params;
-    if (id === '1') return HttpResponse.json(mockBulbasaurSpecies);
-    if (id === '2') return HttpResponse.json(mockIvysaurSpecies);
-    if (id === '25') return HttpResponse.json(mockPikachuSpecies);
 
-    // Fallback for any other ID
-    return new HttpResponse(null, { status: 404 });
+    switch (id) {
+      case '1':
+        return HttpResponse.json(mockBulbasaurSpecies);
+      case '2':
+        return HttpResponse.json(mockIvysaurSpecies);
+      case '4':
+        return HttpResponse.json(mockCharmanderSpecies);
+      case '25':
+        return HttpResponse.json(mockPikachuSpecies);
+      default:
+        return new HttpResponse(null, { status: 404 });
+    }
   }),
 ];

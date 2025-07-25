@@ -2,9 +2,11 @@ export interface DisplayPokemon {
   id: number;
   name: string;
   description: string;
+  imageUrl: string;
 }
 
 export interface PokemonListResponse {
+  count: number;
   results: {
     name: string;
     url: string;
@@ -19,4 +21,15 @@ export interface PokemonSpeciesResponse {
       name: string;
     };
   }[];
+}
+
+export interface PokemonDetailsResponse {
+  id: number;
+  name: string;
+  sprites: {
+    front_default: string | null;
+  };
+  species: {
+    url: string;
+  };
 }

@@ -1,14 +1,12 @@
 import React from 'react';
 
-class CardSkeleton extends React.Component {
-  render() {
-    return (
-      <div
-        className="h-38 w-67 bg-gray-300 rounded"
-        data-testid="card-skeleton"
-      />
-    );
-  }
-}
+const CardSkeleton: React.FC = () => {
+  return (
+    <div
+      className="w-full h-48 bg-gray-700 rounded-lg animate-pulse"
+      data-testid="card-skeleton"
+    />
+  );
+};
 
 export default CardSkeleton;
