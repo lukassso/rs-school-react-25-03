@@ -4,6 +4,7 @@ import type { PokemonListResponse, PokemonSpeciesResponse } from '../types';
 const API_BASE_URL = 'https://pokeapi.co/api/v2';
 
 const mockPokemonList: PokemonListResponse = {
+  count: 1000,
   results: [
     { name: 'bulbasaur', url: `${API_BASE_URL}/pokemon/1/` },
     { name: 'ivysaur', url: `${API_BASE_URL}/pokemon/2/` },
