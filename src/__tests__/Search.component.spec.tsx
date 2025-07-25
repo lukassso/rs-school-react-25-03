@@ -49,4 +49,15 @@ describe('SearchComponent', () => {
     ).toBeDisabled();
     expect(screen.getByRole('button', { name: /search/i })).toBeDisabled();
   });
+
+  it('calls onSearch when the Enter key is pressed', async () => {
+    const handleSearch = vi.fn();
+    render(<SearchComponent {...defaultProps} onSearch={handleSearch} />);
+    const input = screen.getByPlaceholderText('Search Pikachu, Charizard...');
+
+    await userEvent.type(input, 'test');
+    await userEvent.keyboard('{enter}');
+
+    expect(handleSearch).toHaveBeenCalledTimes(1);
+  });
 });
