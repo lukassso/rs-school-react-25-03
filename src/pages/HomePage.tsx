@@ -1,48 +1,69 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
-import type { DisplayPokemon } from '../types';
-import { getPokemons } from '../services/api';
+import Pagination from '../components/Pagination.component';
 import useLocalStorage from '../hooks/useLocalStorage';
+import type { DisplayPokemon } from '../types';
+import { getPokemons, ITEMS_PER_PAGE } from '../services/api';
 
 const HomePage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [persistedQuery, setPersistedQuery] = useLocalStorage(
     'pokemonSearchTerm',
     ''
   );
-  const [inputValue, setInputValue] = useState(persistedQuery);
+
+  const searchTermFromUrl = searchParams.get('search') || persistedQuery;
+  const [inputValue, setInputValue] = useState(searchTermFromUrl);
 
   const [pokemons, setPokemons] = useState<DisplayPokemon[]>([]);
+  const [totalPokemons, setTotalPokemons] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchData = useCallback(() => {
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const searchTerm = searchParams.get('search') || '';
+
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
-    getPokemons(persistedQuery)
-      .then((pokemons) => {
-        if (pokemons.length === 0 && persistedQuery) {
-          throw new Error(`Pokémon not found: ${persistedQuery}`);
-        }
-        setPokemons(pokemons);
-      })
-      .catch((err) => {
-        setError(err as Error);
-        setPokemons([]);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [persistedQuery]);
+    try {
+      const { pokemons: fetchedPokemons, total } = await getPokemons(
+        page,
+        searchTerm
+      );
+      setPokemons(fetchedPokemons);
+      setTotalPokemons(total);
+      if (total === 0 && searchTerm) {
+        throw new Error(`Pokémon not found: ${searchTerm}`);
+      }
+    } catch (err) {
+      setError(err as Error);
+      setPokemons([]);
+      setTotalPokemons(0);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [page, searchTerm]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   const handleSearch = () => {
-    setPersistedQuery(inputValue.trim());
+    const trimmedValue = inputValue.trim();
+    setPersistedQuery(trimmedValue);
+    setSearchParams({ search: trimmedValue, page: '1' });
   };
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage.toString());
+    setSearchParams(params);
+  };
+
+  const totalPages = Math.ceil(totalPokemons / ITEMS_PER_PAGE);
 
   return (
     <div className="flex flex-col items-center">
@@ -53,6 +74,13 @@ const HomePage: React.FC = () => {
         onSearchTermChange={(e) => setInputValue(e.target.value)}
       />
       <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
+      {!isLoading && !error && (
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </div>
   );
 };

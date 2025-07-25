@@ -41,18 +41,26 @@ const AppResults: React.FC<AppResultsProps> = ({
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
       {pokemons.map((pokemon) => (
         <div
           key={pokemon.id}
-          className="flex flex-col items-center text-center border border-gray-200 rounded-lg shadow bg-white p-5 transition-transform transform hover:scale-105"
+          className="flex flex-col items-center text-center border border-gray-700 rounded-lg shadow bg-gray-800 p-5 transition-transform transform hover:scale-105"
         >
-          <h3 className="mb-1 text-xl font-medium text-gray-900 capitalize">
+          {pokemon.imageUrl ? (
+            <img
+              src={pokemon.imageUrl}
+              alt={pokemon.name}
+              className="w-24 h-24 mb-3"
+            />
+          ) : (
+            <div className="w-24 h-24 mb-3 bg-gray-700 rounded-full flex items-center justify-center text-gray-500">
+              ?
+            </div>
+          )}
+          <h3 className="mb-1 text-xl font-medium text-white capitalize">
             {pokemon.name}
           </h3>
-          <p className="text-sm text-gray-500 h-20 overflow-hidden">
-            {pokemon.description}
-          </p>
         </div>
       ))}
     </div>

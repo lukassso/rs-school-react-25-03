@@ -2,64 +2,70 @@ import type {
   PokemonListResponse,
   PokemonSpeciesResponse,
   DisplayPokemon,
+  PokemonDetailsResponse,
 } from '../types';
 
 const API_BASE_URL = 'https://pokeapi.co/api/v2';
+export const ITEMS_PER_PAGE = 20;
 
-async function fetchPokemonList(
-  searchTerm?: string
-): Promise<{ name: string; url: string }[]> {
-  if (searchTerm) {
-    const response = await fetch(
-      `${API_BASE_URL}/pokemon/${searchTerm.toLowerCase()}`
-    );
-    if (!response.ok) {
-      throw new Error(`Pokémon not found: ${searchTerm}`);
-    }
-    const data = await response.json();
-    return [{ name: data.name, url: data.species.url }];
-  } else {
-    const response = await fetch(`${API_BASE_URL}/pokemon?limit=20&offset=0`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch Pokémon list');
-    }
-    const data: PokemonListResponse = await response.json();
-    return data.results;
+export async function fetchPokemonDetails(
+  nameOrId: string | number
+): Promise<DisplayPokemon> {
+  const pokemonResponse = await fetch(`${API_BASE_URL}/pokemon/${nameOrId}`);
+  if (!pokemonResponse.ok) {
+    throw new Error(`Failed to fetch details for Pokémon: ${nameOrId}`);
   }
-}
+  const pokemonData: PokemonDetailsResponse = await pokemonResponse.json();
 
-async function fetchPokemonDetails(pokemonListItem: {
-  name: string;
-  url: string;
-}): Promise<DisplayPokemon> {
-  const speciesResponse = await fetch(
-    pokemonListItem.url.replace('/pokemon/', '/pokemon-species/')
-  );
-  if (!speciesResponse.ok)
-    throw new Error(`Failed to fetch details for ${pokemonListItem.name}`);
+  const speciesResponse = await fetch(pokemonData.species.url);
+  if (!speciesResponse.ok) {
+    throw new Error(`Failed to fetch species details for ${pokemonData.name}`);
+  }
   const speciesData: PokemonSpeciesResponse = await speciesResponse.json();
 
-  const englishDescription = speciesData.flavor_text_entries
-    .find((entry) => entry.language.name === 'en')
-    ?.flavor_text.replace(/[\n\f]/g, ' ');
+  const englishDescription =
+    speciesData.flavor_text_entries
+      .find((entry) => entry.language.name === 'en')
+      ?.flavor_text.replace(/[\n\f]/g, ' ') || 'No description available.';
 
   return {
-    id: speciesData.id,
-    name: pokemonListItem.name,
-    description: englishDescription || 'No description available.',
+    id: pokemonData.id,
+    name: pokemonData.name,
+    description: englishDescription,
+    imageUrl: pokemonData.sprites.front_default,
   };
 }
 
 export async function getPokemons(
+  page: number,
   searchTerm?: string
-): Promise<DisplayPokemon[]> {
-  const pokemonList = await fetchPokemonList(searchTerm);
+): Promise<{ pokemons: DisplayPokemon[]; total: number }> {
+  if (searchTerm) {
+    try {
+      const pokemon = await fetchPokemonDetails(searchTerm.toLowerCase());
+      return { pokemons: [pokemon], total: 1 };
+    } catch (error) {
+      // Jeśli nie znaleziono, zwróć pusty wynik
+      return { pokemons: [], total: 0 };
+    }
+  }
 
-  const detailedPokemonPromises = pokemonList.map((item) =>
-    fetchPokemonDetails(item)
+  const offset = (page - 1) * ITEMS_PER_PAGE;
+  const response = await fetch(
+    `${API_BASE_URL}/pokemon?limit=${ITEMS_PER_PAGE}&offset=${offset}`
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch Pokémon list');
+  }
+
+  const data: PokemonListResponse = await response.json();
+
+  const detailedPokemonPromises = data.results.map((p) =>
+    fetchPokemonDetails(p.name)
   );
 
   const pokemons = await Promise.all(detailedPokemonPromises);
 
-  return pokemons;
+  return { pokemons, total: data.count };
 }
