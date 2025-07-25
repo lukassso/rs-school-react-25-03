@@ -1,80 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AppTopControls from './layout/AppTopControls';
 import AppResults from './layout/AppResults';
 import type { DisplayPokemon } from './types';
 import { getPokemons } from './services/api';
-
-const LS_SEARCH_KEY = 'pokemonSearchTerm';
-
-interface AppState {
-  searchTerm: string;
-  pokemons: DisplayPokemon[];
-  isLoading: boolean;
-  error: Error | null;
-  shouldThrowError: boolean;
-}
+import useLocalStorage from './hooks/useLocalStorage';
 
 const App: React.FC = () => {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [pokemons, setPokemons] = React.useState<DisplayPokemon[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<Error | null>(null);
-  const [shouldThrowError, setShouldThrowError] = React.useState(false);
+  const [persistedQuery, setPersistedQuery] = useLocalStorage(
+    'pokemonSearchTerm',
+    ''
+  );
+  const [inputValue, setInputValue] = useState(persistedQuery);
+  const [pokemons, setPokemons] = useState<DisplayPokemon[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  React.useEffect(() => {
-    const savedSearchTerm = localStorage.getItem(LS_SEARCH_KEY) || '';
-    setSearchTerm(savedSearchTerm);
-  }, []);
-
-  const handleThrowError = () => {
-    setShouldThrowError(true);
-  };
-
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setIsLoading(true);
     setError(null);
 
-    getPokemons(searchTerm.trim())
-      .then((data) => {
-        setPokemons(data);
-        setIsLoading(false);
+    getPokemons(persistedQuery)
+      .then((pokemons) => {
+        setPokemons(pokemons);
       })
-      .catch((error) => {
-        setError(error);
+      .catch((err) => {
+        setError(err as Error);
+        setPokemons([]);
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [persistedQuery]);
 
-  const handleSearchTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchTerm(event.target.value);
-  };
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSearch = () => {
-    localStorage.setItem(LS_SEARCH_KEY, searchTerm.trim());
-    fetchData();
+    setPersistedQuery(inputValue.trim());
   };
 
-  if (shouldThrowError) {
-    throw new Error('You clicked the button to test the Error Boundary!');
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[rgb(36,36,36)] text-white p-8">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-8">
       <AppTopControls
-        searchTerm={searchTerm}
+        searchTerm={inputValue}
         onSearch={handleSearch}
         isLoading={isLoading}
-        onSearchTermChange={handleSearchTermChange}
+        onSearchTermChange={(e) => setInputValue(e.target.value)}
       />
       <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
-      <button
-        onClick={handleThrowError}
-        className="cursor-pointer mt-5 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Check an error
-      </button>
     </div>
   );
 };
