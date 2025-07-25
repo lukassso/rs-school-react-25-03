@@ -45,7 +45,7 @@ export async function getPokemons(
       const pokemon = await fetchPokemonDetails(searchTerm.toLowerCase());
       return { pokemons: [pokemon], total: 1 };
     } catch (error) {
-      // Jeśli nie znaleziono, zwróć pusty wynik
+      console.error(`Failed to fetch Pokémon "${searchTerm}":`, error);
       return { pokemons: [], total: 0 };
     }
   }
