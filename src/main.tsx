@@ -10,6 +10,8 @@ import AboutPage from './pages/AboutPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import PokemonDetails from './pages/PokemonDetails.tsx';
 import { ThemeProvider } from './context/ThemeContext.tsx';
+import { Provider } from 'react-redux';
+import { store } from './store/store.ts';
 
 const router = createBrowserRouter([
   {
@@ -42,9 +44,11 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <AppErrors>
-        <ThemeProvider>
-          <RouterProvider router={router} />
-        </ThemeProvider>
+        <Provider store={store}>
+          <ThemeProvider>
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </Provider>
       </AppErrors>
     </StrictMode>
   );
