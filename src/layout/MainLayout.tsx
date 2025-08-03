@@ -1,14 +1,16 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 const MainLayout: React.FC = () => {
-  const activeLinkClass = 'text-blue-400 underline';
+  const { theme, toggleTheme } = useTheme();
+  const activeLinkClass = 'text-blue-300 underline underline';
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4 shadow-md sticky top-0 z-10">
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
+      <header className="bg-card p-4 shadow-md sticky top-0 z-10 border-b border-border">
         <nav className="container mx-auto flex justify-between items-center">
-          <NavLink to="/" className="text-2xl font-bold text-white">
+          <NavLink to="/" className="text-2xl font-bold text-primary">
             PokéApp
           </NavLink>
           <ul className="flex gap-4">
@@ -33,6 +35,13 @@ const MainLayout: React.FC = () => {
               </NavLink>
             </li>
           </ul>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? '🌙' : '☀️'}
+          </button>
         </nav>
       </header>
       <main className="flex-grow container mx-auto p-4 md:p-8">

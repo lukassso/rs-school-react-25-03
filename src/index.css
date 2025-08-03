@@ -1,1 +1,18 @@
 @import 'tailwindcss';
+
+@layer base {
+  :root[data-theme='dark'] {
+    --color-background: 17 24 39;
+    --color-foreground: 229 231 235;
+    --color-primary: 96 165 250;
+    --color-card: 31 41 55;
+    --color-border: 55 65 81;
+  }
+  [data-theme='light'] {
+    --color-background: 255 255 255;
+    --color-foreground: 17 24 39;
+    --color-primary: 59 130 246;
+    --color-card: 249 250 251;
+    --color-border: 229 231 235;
+  }
+}

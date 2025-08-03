@@ -9,6 +9,7 @@ import HomePage from './pages/HomePage.tsx';
 import AboutPage from './pages/AboutPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import PokemonDetails from './pages/PokemonDetails.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,9 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <AppErrors>
-        <RouterProvider router={router} />
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </AppErrors>
     </StrictMode>
   );
