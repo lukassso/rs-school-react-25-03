@@ -3,11 +3,7 @@ import CardSkeleton from '../components/CardSkeleton.component';
 import type { DisplayPokemon } from '../types';
 import { Link, useSearchParams } from 'react-router';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import {
-  addSelected,
-  removeSelected,
-  selectSelectedIds,
-} from '../store/selectionSlice';
+import { toggleSelected, selectSelectedIds } from '../store/selectionSlice';
 
 interface AppResultsProps {
   isLoading: boolean;
@@ -24,12 +20,8 @@ const AppResults: React.FC<AppResultsProps> = ({
   const dispatch = useAppDispatch();
   const selectedIds = useAppSelector(selectSelectedIds);
 
-  const handleCheckboxChange = (pokemonId: number, isSelected: boolean) => {
-    if (isSelected) {
-      dispatch(addSelected(pokemonId));
-    } else {
-      dispatch(removeSelected(pokemonId));
-    }
+  const handleCheckboxChange = (pokemon: DisplayPokemon) => {
+    dispatch(toggleSelected(pokemon));
   };
 
   if (isLoading) {
@@ -77,9 +69,7 @@ const AppResults: React.FC<AppResultsProps> = ({
               type="checkbox"
               className="absolute top-2 right-2 h-6 w-6"
               checked={isSelected}
-              onChange={(e) =>
-                handleCheckboxChange(pokemon.id, e.target.checked)
-              }
+              onChange={() => handleCheckboxChange(pokemon)}
               aria-label={`Select ${pokemon.name}`}
             />
             <Link

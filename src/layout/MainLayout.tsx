@@ -1,13 +1,14 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import SelectionFlyout from '../components/SelectionFlyout.component';
 
 const MainLayout: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const activeLinkClass = 'text-blue-300 underline underline';
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="flex flex-col min-h-screen bg-gray-900 text-foreground transition-colors duration-300">
       <header className="bg-card p-4 shadow-md sticky top-0 z-10 border-b border-border">
         <nav className="container mx-auto flex justify-between items-center">
           <NavLink to="/" className="text-2xl font-bold text-primary">
@@ -50,6 +51,7 @@ const MainLayout: React.FC = () => {
       <footer className="bg-gray-800 p-4 text-center text-gray-400">
         © 2024 PokéApp
       </footer>
+      <SelectionFlyout />
     </div>
   );
 };

@@ -1,36 +1,40 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from './store.ts'; // Za chwilę stworzymy ten plik
+import type { RootState } from './store.ts';
+import type { DisplayPokemon } from '../types.ts';
 
 interface SelectionState {
-  selectedIds: number[];
+  selectedPokemons: DisplayPokemon[];
 }
 
 const initialState: SelectionState = {
-  selectedIds: [],
+  selectedPokemons: [],
 };
 
 export const selectionSlice = createSlice({
   name: 'selection',
   initialState,
   reducers: {
-    addSelected: (state, action: PayloadAction<number>) => {
-      state.selectedIds.push(action.payload);
-    },
-    removeSelected: (state, action: PayloadAction<number>) => {
-      state.selectedIds = state.selectedIds.filter(
-        (id) => id !== action.payload
+    toggleSelected: (state, action: PayloadAction<DisplayPokemon>) => {
+      const existingIndex = state.selectedPokemons.findIndex(
+        (p) => p.id === action.payload.id
       );
+      if (existingIndex >= 0) {
+        state.selectedPokemons.splice(existingIndex, 1);
+      } else {
+        state.selectedPokemons.push(action.payload);
+      }
     },
     clearSelection: (state) => {
-      state.selectedIds = [];
+      state.selectedPokemons = [];
     },
   },
 });
 
-export const { addSelected, removeSelected, clearSelection } =
-  selectionSlice.actions;
+export const { toggleSelected, clearSelection } = selectionSlice.actions;
 
+export const selectSelectedPokemons = (state: RootState) =>
+  state.selection.selectedPokemons;
 export const selectSelectedIds = (state: RootState) =>
-  state.selection.selectedIds;
+  state.selection.selectedPokemons.map((p) => p.id);
 
 export default selectionSlice.reducer;
