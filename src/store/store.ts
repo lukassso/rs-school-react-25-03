@@ -1,13 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {
+  combineReducers,
+  configureStore as rtkConfigureStore,
+} from '@reduxjs/toolkit';
 import selectionReducer from './selectionSlice';
 
-export const store = configureStore({
-  reducer: {
-    selection: selectionReducer,
-  },
+const rootReducer = combineReducers({
+  selection: selectionReducer,
 });
 
-// Types for RootState and AppDispatch
-// These types are used to type the useSelector and useDispatch hooks
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export const setupStore = (preloadedState?: Partial<RootState>) => {
+  return rtkConfigureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+};
+
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppStore = ReturnType<typeof setupStore>;
+export type AppDispatch = AppStore['dispatch'];
+
+export const store = setupStore();
