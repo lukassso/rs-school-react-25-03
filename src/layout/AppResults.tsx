@@ -83,11 +83,11 @@ const AppResults: React.FC<AppResultsProps> = ({
                   className="w-24 h-24 mb-3"
                 />
               ) : (
-                <div className="w-24 h-24 mb-3 bg-gray-700 rounded-full flex items-center justify-center text-gray-500">
+                <div className="w-24 h-24 mb-3 bg-card rounded-full flex items-center justify-center text-foreground">
                   ?
                 </div>
               )}
-              <h3 className="mb-1 text-xl font-medium text-white capitalize">
+              <h3 className="mb-1 text-xl font-medium text-foreground capitalize">
                 {pokemon.name}
               </h3>
             </Link>

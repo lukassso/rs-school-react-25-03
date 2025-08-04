@@ -5,10 +5,10 @@ import SelectionFlyout from '../components/SelectionFlyout.component';
 
 const MainLayout: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
-  const activeLinkClass = 'text-blue-300 underline underline';
+  const activeLinkClass = 'text-primary underline underline';
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-900 text-foreground transition-colors duration-300">
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
       <header className="bg-card p-4 shadow-md sticky top-0 z-10 border-b border-border">
         <nav className="container mx-auto flex justify-between items-center">
           <NavLink to="/" className="text-2xl font-bold text-primary">

@@ -1,18 +1,21 @@
 @import 'tailwindcss';
 
-@layer base {
-  :root[data-theme='dark'] {
-    --color-background: 17 24 39;
-    --color-foreground: 229 231 235;
-    --color-primary: 96 165 250;
-    --color-card: 31 41 55;
-    --color-border: 55 65 81;
-  }
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  --color-background: theme(colors.gray.900);
+  --color-foreground: theme(colors.gray.200);
+  --color-primary: theme(colors.blue.400);
+  --color-card: theme(colors.gray.800);
+  --color-border: theme(colors.gray.700);
+}
+
+@layer theme {
   [data-theme='light'] {
-    --color-background: 255 255 255;
-    --color-foreground: 17 24 39;
-    --color-primary: 59 130 246;
-    --color-card: 249 250 251;
-    --color-border: 229 231 235;
+    --color-background: theme(colors.white);
+    --color-foreground: theme(colors.gray.900);
+    --color-primary: theme(colors.blue.600);
+    --color-card: theme(colors.gray.100);
+    --color-border: theme(colors.gray.200);
   }
 }
