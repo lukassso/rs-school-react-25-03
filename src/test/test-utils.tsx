@@ -1,4 +1,4 @@
-import React, { type PropsWithChildren } from 'react';
+import React, { type JSX, type PropsWithChildren } from 'react';
 import { render } from '@testing-library/react';
 import type { RenderOptions } from '@testing-library/react';
 import { Provider } from 'react-redux';
