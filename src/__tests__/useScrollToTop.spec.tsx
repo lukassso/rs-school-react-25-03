@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook } from '../test/test-utils';
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import useScrollToTop from '../hooks/useScrollToTop';
 

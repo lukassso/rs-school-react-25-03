@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test/test-utils';
 import { describe, it, expect } from 'vitest';
 import CardSkeleton from '../components/CardSkeleton.component';
 
@@ -20,7 +20,7 @@ describe('CardSkeleton component', () => {
 
     // It verifies that the styling that makes it look like a skeleton is applied.
     expect(skeletonDiv).toHaveClass(
-      'w-full h-48 bg-gray-700 rounded-lg animate-pulse'
+      'w-full h-48 bg-card rounded-lg animate-pulse'
     );
   });
 });

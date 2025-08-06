@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Outlet } from 'react-router-dom';
+import { useSearchParams, Outlet } from 'react-router';
 import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
 import Pagination from '../components/Pagination.component';
@@ -16,7 +16,7 @@ const HomePage: React.FC = () => {
 
   const page = parseInt(searchParams.get('page') || '1', 10);
   const searchTerm = searchParams.get('search') || '';
-  const detailsOpen = searchParams.has('details'); // **PRZYWRÓCONE I KLUCZOWE**
+  const detailsOpen = searchParams.has('details');
 
   const [inputValue, setInputValue] = useState(searchTerm || persistedQuery);
 

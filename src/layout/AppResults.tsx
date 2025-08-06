@@ -2,6 +2,8 @@ import React from 'react';
 import CardSkeleton from '../components/CardSkeleton.component';
 import type { DisplayPokemon } from '../types';
 import { Link, useSearchParams } from 'react-router';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { toggleSelected, selectSelectedIds } from '../store/selectionSlice';
 
 interface AppResultsProps {
   isLoading: boolean;
@@ -15,6 +17,12 @@ const AppResults: React.FC<AppResultsProps> = ({
   pokemons,
 }) => {
   const [searchParams] = useSearchParams();
+  const dispatch = useAppDispatch();
+  const selectedIds = useAppSelector(selectSelectedIds);
+
+  const handleCheckboxChange = (pokemon: DisplayPokemon) => {
+    dispatch(toggleSelected(pokemon));
+  };
 
   if (isLoading) {
     return (
@@ -48,27 +56,42 @@ const AppResults: React.FC<AppResultsProps> = ({
       {pokemons.map((pokemon) => {
         const newSearchParams = new URLSearchParams(searchParams);
         newSearchParams.set('details', pokemon.name);
+        const isSelected = selectedIds.includes(pokemon.id);
+
         return (
-          <Link
+          <div
             key={pokemon.id}
-            to={`/?${newSearchParams.toString()}`}
-            className="flex flex-col items-center text-center border border-gray-700 rounded-lg shadow bg-gray-800 p-5 transition-transform transform hover:scale-105 hover:border-blue-500"
+            className={`relative flex flex-col items-center text-center border rounded-lg shadow bg-card p-5 transition-all transform hover:scale-105 ${
+              isSelected ? 'border-primary' : 'border-border'
+            }`}
           >
-            {pokemon.imageUrl ? (
-              <img
-                src={pokemon.imageUrl}
-                alt={pokemon.name}
-                className="w-24 h-24 mb-3"
-              />
-            ) : (
-              <div className="w-24 h-24 mb-3 bg-gray-700 rounded-full flex items-center justify-center text-gray-500">
-                ?
-              </div>
-            )}
-            <h3 className="mb-1 text-xl font-medium text-white capitalize">
-              {pokemon.name}
-            </h3>
-          </Link>
+            <input
+              type="checkbox"
+              className="absolute top-2 right-2 h-6 w-6"
+              checked={isSelected}
+              onChange={() => handleCheckboxChange(pokemon)}
+              aria-label={`Select ${pokemon.name}`}
+            />
+            <Link
+              to={`/?${newSearchParams.toString()}`}
+              className="flex flex-col items-center w-full"
+            >
+              {pokemon.imageUrl ? (
+                <img
+                  src={pokemon.imageUrl}
+                  alt={pokemon.name}
+                  className="w-24 h-24 mb-3"
+                />
+              ) : (
+                <div className="w-24 h-24 mb-3 bg-card rounded-full flex items-center justify-center text-foreground">
+                  ?
+                </div>
+              )}
+              <h3 className="mb-1 text-xl font-medium text-foreground capitalize">
+                {pokemon.name}
+              </h3>
+            </Link>
+          </div>
         );
       })}
     </div>

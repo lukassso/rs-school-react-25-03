@@ -22,7 +22,7 @@ const SearchComponent: React.FC<SearchProps> = ({
   return (
     <div className="flex w-full relative">
       <input
-        className="border h-14 md:h-18 border-gray-300 focus:outline-none rounded-l-lg md:py-6 py-3 md:px-12 px-6 text-xl md:text-2xl w-full"
+        className="border h-14 md:h-18 border-border focus:outline-none rounded-l-lg md:py-6 py-3 md:px-12 px-6 text-xl md:text-2xl w-full bg-background text-foreground"
         type="search"
         placeholder="Search Pikachu, Charizard..."
         disabled={isLoading}
@@ -34,7 +34,7 @@ const SearchComponent: React.FC<SearchProps> = ({
       <button
         onClick={onSearch}
         disabled={isLoading}
-        className="text-white h-14 md:h-18 cursor-pointer text-xl md:text-2xl bg-blue-700 hover:bg-blue-800 focus:outline-none font-medium rounded-r-lg md:px-12 px-8 py-2 text-center"
+        className="text-white h-14 md:h-18 cursor-pointer text-xl md:text-2xl bg-primary hover:bg-blue-800 focus:outline-none font-medium rounded-r-lg md:px-12 px-8 py-2 text-center"
       >
         Search
       </button>

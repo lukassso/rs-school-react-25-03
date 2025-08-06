@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router';
 import './index.css';
 
 import AppErrors from './layout/AppErrors.tsx';
@@ -9,6 +9,9 @@ import HomePage from './pages/HomePage.tsx';
 import AboutPage from './pages/AboutPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import PokemonDetails from './pages/PokemonDetails.tsx';
+import { ThemeProvider } from './context/ThemeContext.tsx';
+import { Provider } from 'react-redux';
+import { store } from './store/store.ts';
 
 const router = createBrowserRouter([
   {
@@ -41,7 +44,11 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <AppErrors>
-        <RouterProvider router={router} />
+        <Provider store={store}>
+          <ThemeProvider>
+            <RouterProvider router={router} />
+          </ThemeProvider>
+        </Provider>
       </AppErrors>
     </StrictMode>
   );

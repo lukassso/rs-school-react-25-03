@@ -1,7 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, waitFor, userEvent, render } from '../test/test-utils';
 import { describe, it, expect, vi } from 'vitest';
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import PokemonDetails from '../pages/PokemonDetails';
 import * as api from '../services/api';
 
@@ -16,36 +15,26 @@ const mockPikachu = {
 
 const LocationTracker = () => {
   const location = useLocation();
-  return <div data-testid="location-tracker">{location.search}</div>;
-};
-
-const renderDetails = (initialEntries = ['/']) => {
-  return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <PokemonDetails />
-              <LocationTracker />
-            </>
-          }
-        />
-      </Routes>
-    </MemoryRouter>
+  return (
+    <div data-testid="location-tracker">
+      {location.pathname + location.search}
+    </div>
   );
 };
 
 describe('PokemonDetails component', () => {
   it('renders nothing if "details" param is missing', () => {
-    const { container } = renderDetails(['/']);
+    const { container } = render(<PokemonDetails />, {
+      initialEntries: ['/'],
+    });
     expect(container.querySelector('.sticky')).toBeNull();
   });
 
   it('shows a loading spinner and then displays pokemon details', async () => {
     vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
-    renderDetails(['/?details=pikachu']);
+    render(<PokemonDetails />, {
+      initialEntries: ['/?details=pikachu'],
+    });
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
 
@@ -59,7 +48,9 @@ describe('PokemonDetails component', () => {
     vi.mocked(api.fetchPokemonDetails).mockRejectedValue(
       new Error('Not Found')
     );
-    renderDetails(['/?details=pikachu']);
+    render(<PokemonDetails />, {
+      initialEntries: ['/?details=pikachu'],
+    });
 
     await waitFor(() => {
       expect(screen.getByText(/error: not found/i)).toBeInTheDocument();
@@ -68,7 +59,13 @@ describe('PokemonDetails component', () => {
 
   it('clears the "details" param from URL when close button is clicked', async () => {
     vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
-    renderDetails(['/?page=1&details=pikachu']);
+    render(
+      <>
+        <PokemonDetails />
+        <LocationTracker />
+      </>,
+      { initialEntries: ['/?page=1&details=pikachu'] }
+    );
 
     await screen.findByText('pikachu');
     const closeButton = screen.getByRole('button', { name: /close details/i });
@@ -77,7 +74,7 @@ describe('PokemonDetails component', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('location-tracker').textContent).toBe(
-        '?page=1'
+        '/?page=1'
       );
     });
   });

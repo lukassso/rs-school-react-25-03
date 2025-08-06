@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router';
 import { fetchPokemonDetails } from '../services/api';
 import type { DisplayPokemon } from '../types';
 import Spinner from '../components/Spinner.component';
@@ -43,10 +43,10 @@ const PokemonDetails: React.FC = () => {
   }
 
   return (
-    <div className="sticky top-[100px] p-5 border border-gray-700 rounded-lg bg-gray-800 h-[calc(100vh-140px)] overflow-y-auto">
+    <div className="sticky top-[100px] p-5 border border-border rounded-lg bg-card h-[calc(100vh-140px)] overflow-y-auto">
       <button
         onClick={handleClose}
-        className="absolute top-2 right-2 text-3xl text-gray-400 hover:text-white z-10"
+        className="absolute top-2 right-2 text-3xl text-foreground hover:text-primary z-10"
         aria-label="Close details"
       >
         ×
@@ -64,11 +64,13 @@ const PokemonDetails: React.FC = () => {
           <img
             src={pokemon.imageUrl}
             alt={pokemon.name}
-            className="w-48 h-48 p-13 m-4 bg-gray-700 rounded-full border border-gray-600 shadow-lg"
+            className="w-48 h-48 p-13 m-4 bg-card rounded-full border border-border shadow-lg"
           />
-          <h2 className="text-3xl font-bold capitalize mb-2">{pokemon.name}</h2>
-          <span className="text-sm text-gray-400 mb-4">ID: {pokemon.id}</span>
-          <p className="text-gray-300 text-lg">{pokemon.description}</p>
+          <h2 className="text-3xl font-bold capitalize mb-2 text-foreground">
+            {pokemon.name}
+          </h2>
+          <span className="text-sm text-foreground mb-4">ID: {pokemon.id}</span>
+          <p className="text-foreground text-lg">{pokemon.description}</p>
         </div>
       )}
     </div>
