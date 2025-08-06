@@ -1,10 +1,8 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, waitFor, userEvent, render } from '../test/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import { useLocation } from 'react-router';
 import PokemonDetails from '../pages/PokemonDetails';
 import * as api from '../services/api';
-import { renderWithProviders } from '../test/test-utils';
 
 vi.mock('../services/api');
 
@@ -26,7 +24,7 @@ const LocationTracker = () => {
 
 describe('PokemonDetails component', () => {
   it('renders nothing if "details" param is missing', () => {
-    const { container } = renderWithProviders(<PokemonDetails />, {
+    const { container } = render(<PokemonDetails />, {
       initialEntries: ['/'],
     });
     expect(container.querySelector('.sticky')).toBeNull();
@@ -34,7 +32,7 @@ describe('PokemonDetails component', () => {
 
   it('shows a loading spinner and then displays pokemon details', async () => {
     vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
-    renderWithProviders(<PokemonDetails />, {
+    render(<PokemonDetails />, {
       initialEntries: ['/?details=pikachu'],
     });
 
@@ -50,7 +48,7 @@ describe('PokemonDetails component', () => {
     vi.mocked(api.fetchPokemonDetails).mockRejectedValue(
       new Error('Not Found')
     );
-    renderWithProviders(<PokemonDetails />, {
+    render(<PokemonDetails />, {
       initialEntries: ['/?details=pikachu'],
     });
 
@@ -61,7 +59,7 @@ describe('PokemonDetails component', () => {
 
   it('clears the "details" param from URL when close button is clicked', async () => {
     vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
-    renderWithProviders(
+    render(
       <>
         <PokemonDetails />
         <LocationTracker />

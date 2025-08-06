@@ -1,11 +1,11 @@
 import React, { type JSX, type PropsWithChildren } from 'react';
-import { render } from '@testing-library/react';
-import type { RenderOptions } from '@testing-library/react';
+import { render, type RenderOptions } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
 
 import { setupStore, type AppStore, type RootState } from '../store/store';
 import { ThemeProvider } from '../context/ThemeContext';
+import userEvent from '@testing-library/user-event';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: Partial<RootState>;
@@ -36,3 +36,8 @@ export function renderWithProviders(
 
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
+
+export * from '@testing-library/react';
+
+export { renderWithProviders as render };
+export { userEvent };

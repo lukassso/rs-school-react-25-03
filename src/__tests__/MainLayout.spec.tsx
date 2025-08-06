@@ -1,14 +1,12 @@
-import { screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Route, Routes } from 'react-router';
 import MainLayout from '../layout/MainLayout';
-import { renderWithProviders } from '../test/test-utils';
+import { render, screen, userEvent } from '../test/test-utils';
 import { mockBulbasaur } from '../test/handlers';
-import userEvent from '@testing-library/user-event';
 
 describe('MainLayout component', () => {
   it('renders header, footer, and outlet content', () => {
-    renderWithProviders(
+    render(
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<div>Outlet Content</div>} />
@@ -29,7 +27,7 @@ describe('MainLayout component', () => {
       },
     };
 
-    renderWithProviders(
+    render(
       <Routes>
         <Route path="/" element={<MainLayout />} />
       </Routes>,
@@ -43,7 +41,7 @@ describe('MainLayout component', () => {
   });
 
   it('toggles the theme when the theme button is clicked', async () => {
-    renderWithProviders(<MainLayout />);
+    render(<MainLayout />);
 
     const themeButton = screen.getByRole('button', { name: /toggle theme/i });
 

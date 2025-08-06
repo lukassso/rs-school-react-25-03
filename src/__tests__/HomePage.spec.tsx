@@ -1,8 +1,6 @@
-import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { describe, it, expect, beforeEach } from 'vitest';
 import HomePage from '../pages/HomePage';
-import { renderWithProviders } from '../test/test-utils';
+import { render, screen, waitFor, userEvent } from '../test/test-utils';
 
 describe('HomePage component with MSW', () => {
   beforeEach(() => {
@@ -10,13 +8,13 @@ describe('HomePage component with MSW', () => {
   });
 
   it('renders and fetches initial pokemon list on mount', async () => {
-    renderWithProviders(<HomePage />);
+    render(<HomePage />);
     expect(screen.getAllByTestId('card-skeleton').length).toBeGreaterThan(0);
     expect(await screen.findByText('bulbasaur')).toBeInTheDocument();
   });
 
   it('allows user to search for a pokemon', async () => {
-    renderWithProviders(<HomePage />);
+    render(<HomePage />);
     await screen.findByText('bulbasaur');
 
     const input = screen.getByRole('searchbox');
@@ -34,7 +32,7 @@ describe('HomePage component with MSW', () => {
   });
 
   it('displays pagination and handles page changes', async () => {
-    renderWithProviders(<HomePage />, { initialEntries: ['/?page=1'] });
+    render(<HomePage />, { initialEntries: ['/?page=1'] });
 
     await screen.findByText('bulbasaur');
 
