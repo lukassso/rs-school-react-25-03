@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router';
 import MainLayout from '../layout/MainLayout';
 import { renderWithProviders } from '../test/test-utils';
 import { mockBulbasaur } from '../test/handlers';

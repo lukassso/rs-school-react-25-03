@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router';
 import { useTheme } from '../context/ThemeContext';
 import SelectionFlyout from '../components/SelectionFlyout.component';
 

@@ -1,4 +1,3 @@
-// Plik: src/context/ThemeContext.tsx
 import React, { createContext, useContext, useEffect } from 'react';
 import { useLocalStorage } from '../hooks';
 

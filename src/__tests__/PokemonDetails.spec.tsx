@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import PokemonDetails from '../pages/PokemonDetails';
 import * as api from '../services/api';
 import { renderWithProviders } from '../test/test-utils';

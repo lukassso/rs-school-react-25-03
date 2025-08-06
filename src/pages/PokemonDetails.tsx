@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router';
 import { fetchPokemonDetails } from '../services/api';
 import type { DisplayPokemon } from '../types';
 import Spinner from '../components/Spinner.component';
