@@ -87,7 +87,21 @@ export const pokemonApi = createApi({
         }
       },
     }),
+    getPokemonDetails: builder.query<DisplayPokemon, string>({
+      queryFn: async (name, { signal }) => {
+        try {
+          const fetchWithSignal = (input: RequestInfo | URL) =>
+            fetch(input, { signal });
+          const pokemon = await fetchPokemonDetails(name, fetchWithSignal);
+          return { data: pokemon };
+        } catch (error) {
+          return {
+            error: { status: 'FETCH_ERROR', error: (error as Error).message },
+          };
+        }
+      },
+    }),
   }),
 });
 
-export const { useGetPokemonsQuery } = pokemonApi;
+export const { useGetPokemonsQuery, useGetPokemonDetailsQuery } = pokemonApi;
