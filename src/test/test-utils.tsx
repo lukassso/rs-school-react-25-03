@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router';
 import { setupStore, type AppStore, type RootState } from '../store/store';
 import { ThemeProvider } from '../context/ThemeContext';
 import userEvent from '@testing-library/user-event';
+import { pokemonApi } from '../services/pokemonApi';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
   preloadedState?: Partial<RootState>;
@@ -16,8 +17,11 @@ interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
 export function renderWithProviders(
   ui: React.ReactElement,
   {
-    preloadedState,
-    store = setupStore(preloadedState),
+    preloadedState = {},
+    store = setupStore({
+      [pokemonApi.reducerPath]: pokemonApi.reducer(undefined, { type: '' }),
+      ...preloadedState,
+    }),
     initialEntries = ['/'],
     ...renderOptions
   }: ExtendedRenderOptions = {}

@@ -1,36 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import { fetchPokemonDetails } from '../services/api';
-import type { DisplayPokemon } from '../types';
 import Spinner from '../components/Spinner.component';
+import { useGetPokemonDetailsQuery } from '../services/pokemonApi';
 
 const PokemonDetails: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const pokemonName = searchParams.get('details');
 
-  const [pokemon, setPokemon] = useState<DisplayPokemon | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (pokemonName) {
-      const loadDetails = async () => {
-        setIsLoading(true);
-        setError(null);
-        setPokemon(null);
-        try {
-          const data = await fetchPokemonDetails(pokemonName);
-          setPokemon(data);
-        } catch (err) {
-          setError(err as Error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadDetails();
-    }
-  }, [pokemonName]);
+  const {
+    data: pokemon,
+    error,
+    isLoading,
+  } = useGetPokemonDetailsQuery(pokemonName ?? '', {
+    skip: !pokemonName,
+  });
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
@@ -57,7 +41,10 @@ const PokemonDetails: React.FC = () => {
         </div>
       )}
       {error && (
-        <p className="text-red-400 text-center">Error: {error.message}</p>
+        <p className="text-red-400 text-center">
+          Error:{' '}
+          {(error as { error: string }).error || 'An unknown error occurred'}
+        </p>
       )}
       {pokemon && !isLoading && (
         <div className="flex flex-col items-center text-center animate-fade-in">

@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-600 disabled:cursor-not-allowed"
+        className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-600 disabled:cursor-not-allowed cursor-pointer "
       >
         Previous
       </button>
@@ -42,7 +42,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={handleNext}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-600 disabled:cursor-not-allowed"
+        className="px-4 py-2 bg-primary text-white rounded disabled:bg-gray-600 disabled:cursor-not-allowed cursor-pointer "
       >
         Next
       </button>

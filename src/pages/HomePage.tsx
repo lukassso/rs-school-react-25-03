@@ -4,8 +4,7 @@ import AppTopControls from '../layout/AppTopControls';
 import AppResults from '../layout/AppResults';
 import Pagination from '../components/Pagination.component';
 import { useLocalStorage, useScrollToTop } from '../hooks';
-import type { DisplayPokemon } from '../types';
-import { getPokemons, ITEMS_PER_PAGE } from '../services/api';
+import { ITEMS_PER_PAGE, useGetPokemonsQuery } from '../services/pokemonApi';
 
 const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -20,10 +19,13 @@ const HomePage: React.FC = () => {
 
   const [inputValue, setInputValue] = useState(searchTerm || persistedQuery);
 
-  const [pokemons, setPokemons] = useState<DisplayPokemon[]>([]);
-  const [totalPokemons, setTotalPokemons] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const { data, error, isLoading, isFetching, refetch } = useGetPokemonsQuery({
+    page,
+    searchTerm,
+  });
+
+  const pokemons = data?.pokemons || [];
+  const totalPokemons = data?.total || 0;
 
   useScrollToTop([page, searchTerm]);
 
@@ -33,36 +35,6 @@ const HomePage: React.FC = () => {
       setSearchParams({ search: persistedQuery, page: '1' }, { replace: true });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (!searchParams.has('search') && persistedQuery) {
-      return;
-    }
-
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const { pokemons: fetchedPokemons, total } = await getPokemons(
-          page,
-          searchTerm
-        );
-        setPokemons(fetchedPokemons);
-        setTotalPokemons(total);
-        if (total === 0 && searchTerm) {
-          throw new Error(`Pokémon not found: ${searchTerm}`);
-        }
-      } catch (err) {
-        setError(err as Error);
-        setPokemons([]);
-        setTotalPokemons(0);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [page, searchTerm]);
 
   const handleSearch = () => {
     const trimmedValue = inputValue.trim();
@@ -77,6 +49,7 @@ const HomePage: React.FC = () => {
   };
 
   const totalPages = Math.ceil(totalPokemons / ITEMS_PER_PAGE);
+  const showLoading = isLoading || isFetching;
 
   return (
     <div
@@ -89,9 +62,15 @@ const HomePage: React.FC = () => {
           onSearch={handleSearch}
           isLoading={isLoading}
           onSearchTermChange={(e) => setInputValue(e.target.value)}
+          onRefresh={refetch}
+          isFetching={isFetching}
         />
-        <AppResults isLoading={isLoading} error={error} pokemons={pokemons} />
-        {!isLoading && !error && (
+        <AppResults
+          isLoading={showLoading}
+          error={(error as Error) || null}
+          pokemons={pokemons}
+        />
+        {!showLoading && !error && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}

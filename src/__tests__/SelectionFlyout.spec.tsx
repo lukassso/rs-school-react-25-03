@@ -61,14 +61,25 @@ describe('SelectionFlyout component', () => {
     });
 
     window.URL.createObjectURL = vi.fn(() => 'mock_url');
-    (window as any).Blob = vi.fn();
-    const linkMock = {
+
+    vi.spyOn(window, 'Blob').mockImplementation(
+      (content, options) =>
+        ({
+          content,
+          options,
+        }) as unknown as Blob
+    );
+
+    const linkMock: HTMLAnchorElement = {
       click: vi.fn(),
       setAttribute: vi.fn(),
-    };
+      href: '',
+      download: '',
+    } as Partial<HTMLAnchorElement> as HTMLAnchorElement;
+
     const createElementSpy = vi
       .spyOn(document, 'createElement')
-      .mockReturnValue(linkMock as any);
+      .mockReturnValue(linkMock);
     const appendChildSpy = vi
       .spyOn(document.body, 'appendChild')
       .mockImplementation((node) => node);
