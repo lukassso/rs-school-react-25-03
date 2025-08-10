@@ -12,7 +12,7 @@ const PokemonDetails: React.FC = () => {
     data: pokemon,
     error,
     isLoading,
-  } = useGetPokemonDetailsQuery(pokemonName!, {
+  } = useGetPokemonDetailsQuery(pokemonName ?? '', {
     skip: !pokemonName,
   });
 

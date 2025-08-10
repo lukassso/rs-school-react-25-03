@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
 
   const [inputValue, setInputValue] = useState(searchTerm || persistedQuery);
 
-  const { data, error, isLoading, isFetching } = useGetPokemonsQuery({
+  const { data, error, isLoading, isFetching, refetch } = useGetPokemonsQuery({
     page,
     searchTerm,
   });
@@ -62,6 +62,8 @@ const HomePage: React.FC = () => {
           onSearch={handleSearch}
           isLoading={isLoading}
           onSearchTermChange={(e) => setInputValue(e.target.value)}
+          onRefresh={refetch}
+          isFetching={isFetching}
         />
         <AppResults
           isLoading={showLoading}
