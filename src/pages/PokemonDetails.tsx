@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
-import { fetchPokemonDetails } from '../services/api';
+// import { fetchPokemonDetails } from '../services/api';
 import type { DisplayPokemon } from '../types';
 import Spinner from '../components/Spinner.component';
 
@@ -13,24 +13,24 @@ const PokemonDetails: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    if (pokemonName) {
-      const loadDetails = async () => {
-        setIsLoading(true);
-        setError(null);
-        setPokemon(null);
-        try {
-          const data = await fetchPokemonDetails(pokemonName);
-          setPokemon(data);
-        } catch (err) {
-          setError(err as Error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadDetails();
-    }
-  }, [pokemonName]);
+  // useEffect(() => {
+  //   if (pokemonName) {
+  //     const loadDetails = async () => {
+  //       setIsLoading(true);
+  //       setError(null);
+  //       setPokemon(null);
+  //       try {
+  //         const data = await fetchPokemonDetails(pokemonName);
+  //         setPokemon(data);
+  //       } catch (err) {
+  //         setError(err as Error);
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+  //     loadDetails();
+  //   }
+  // }, [pokemonName]);
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
