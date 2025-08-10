@@ -7,7 +7,7 @@ import { toggleSelected, selectSelectedIds } from '../store/selectionSlice';
 
 interface AppResultsProps {
   isLoading: boolean;
-  error: Error | null;
+  error: unknown;
   pokemons: DisplayPokemon[];
 }
 
@@ -35,10 +35,26 @@ const AppResults: React.FC<AppResultsProps> = ({
   }
 
   if (error) {
+    const getErrorMessage = (err: unknown): string => {
+      if (!err) return 'An unknown error occurred.';
+      if (
+        typeof err === 'object' &&
+        err !== null &&
+        'error' in err &&
+        typeof err.error === 'string'
+      ) {
+        return err.error;
+      }
+      if (err instanceof Error) {
+        return err.message;
+      }
+      return 'An unexpected error occurred. Please check the console.';
+    };
+
     return (
       <div className="text-center p-10 bg-red-100 border border-red-400 text-red-700 rounded-lg">
         <h3 className="font-bold text-lg">An Error Occurred</h3>
-        <p>{error.message}</p>
+        <p>{getErrorMessage(error)}</p>
       </div>
     );
   }

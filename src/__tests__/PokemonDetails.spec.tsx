@@ -1,17 +1,11 @@
 import { screen, waitFor, userEvent, render } from '../test/test-utils';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { useLocation } from 'react-router';
 import PokemonDetails from '../pages/PokemonDetails';
-import * as api from '../services/api';
+import { server } from '../test/server';
+import { http, HttpResponse } from 'msw';
 
-vi.mock('../services/api');
-
-const mockPikachu = {
-  id: 25,
-  name: 'pikachu',
-  description: 'desc',
-  imageUrl: 'url',
-};
+const API_BASE_URL = 'https://pokeapi.co/api/v2';
 
 const LocationTracker = () => {
   const location = useLocation();
@@ -31,7 +25,6 @@ describe('PokemonDetails component', () => {
   });
 
   it('shows a loading spinner and then displays pokemon details', async () => {
-    vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
     render(<PokemonDetails />, {
       initialEntries: ['/?details=pikachu'],
     });
@@ -41,24 +34,28 @@ describe('PokemonDetails component', () => {
     await waitFor(() => {
       expect(screen.getByText('pikachu')).toBeInTheDocument();
     });
-    expect(api.fetchPokemonDetails).toHaveBeenCalledWith('pikachu');
   });
 
   it('shows an error message on fetch failure', async () => {
-    vi.mocked(api.fetchPokemonDetails).mockRejectedValue(
-      new Error('Not Found')
+    server.use(
+      http.get(`${API_BASE_URL}/pokemon/pikachu`, () => {
+        return new HttpResponse(null, { status: 500 });
+      }),
+      http.get(`${API_BASE_URL}/pokemon-species/25`, () => {
+        return new HttpResponse(null, { status: 500 });
+      })
     );
+
     render(<PokemonDetails />, {
       initialEntries: ['/?details=pikachu'],
     });
 
     await waitFor(() => {
-      expect(screen.getByText(/error: not found/i)).toBeInTheDocument();
+      expect(screen.getByText(/error/i)).toBeInTheDocument();
     });
   });
 
   it('clears the "details" param from URL when close button is clicked', async () => {
-    vi.mocked(api.fetchPokemonDetails).mockResolvedValue(mockPikachu);
     render(
       <>
         <PokemonDetails />
