@@ -1,7 +1,7 @@
 import React from 'react';
 import CardSkeleton from '../components/CardSkeleton.component';
 import type { DisplayPokemon } from '../types';
-import { Link, useSearchParams } from 'react-router';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { toggleSelected, selectSelectedIds } from '../store/selectionSlice';
 
@@ -16,7 +16,7 @@ const AppResults: React.FC<AppResultsProps> = ({
   error,
   pokemons,
 }) => {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
   const selectedIds = useAppSelector(selectSelectedIds);
 
@@ -88,7 +88,7 @@ const AppResults: React.FC<AppResultsProps> = ({
               onChange={() => handleCheckboxChange(pokemon)}
               aria-label={`Select ${pokemon.name}`}
             />
-            <Link
+            <a
               to={`/?${newSearchParams.toString()}`}
               className="flex flex-col items-center w-full"
             >
@@ -106,7 +106,7 @@ const AppResults: React.FC<AppResultsProps> = ({
               <h3 className="mb-1 text-xl font-medium text-foreground capitalize">
                 {pokemon.name}
               </h3>
-            </Link>
+            </a>
           </div>
         );
       })}
